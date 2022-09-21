@@ -1,0 +1,278 @@
+---
+title: "Carbon tax"
+output: html_document
+---
+
+```{r}
+  #Denmark analysis 
+
+#Data loading
+library(readxl)
+Denmark <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Denmark.xlsx")
+```
+
+```{r}
+#Plotting Evolution of carbon emissions over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Denmark,aes(x=Year,y=Price))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon tax prices in Denmark from 1990 to 2019")
+```
+Can see a sharp rise in the carbon tax from 2008 onwards in Denmark
+
+```{r}
+#Plotting emissions depending on changes in carbon tax price
+library(RColorBrewer)
+ggplot(Denmark,aes(x=Price,y=Emissions))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon price in Denmark")
+```
+Graphically, the scatter plot and fitted line indicate a possible negative relationship between price and emissions. Increasing the price appears to decrease emissions. 
+
+
+```{r}
+#Plotting Per Capita emissions depending on changes in carbon tax price
+library(RColorBrewer)
+ggplot(Denmark,aes(x=Price,y=PerCapita))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Per capita CO2 emissions")+ggtitle("Per Capita CO2 emissions and carbon pricing in Denmark")
+```
+
+
+```{r}
+library(foreign)
+library(stargazer)
+library(plm)
+Reg=plm(Emissions~Price+AllowancePrice, data=Denmark, index=c("Entity"), model = "within")
+summary(Reg)
+
+```
+For every increase in the carbon price by 1 dollar, CO2 emissions decrease by 981 438 tons 
+
+
+
+```{r}
+library(foreign)
+Reg=lm(PerCapita~Price, data=Denmark)
+summary(Reg)
+```
+
+```{r}
+library(foreign)
+library(stargazer)
+library(plm)
+Reg=plm(PerCapita~Price+Allowance, data=Denmark, index=c("Entity"), model = "within")
+summary(Reg)
+```
+
+
+
+```{r}
+  #Sweden analysis 
+
+#Data loading
+library(readxl)
+Sweden <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Sweden.xlsx")
+```
+
+```{r}
+#Plotting Evolution of carbon emissions over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Sweden,aes(x=Year,y=Price1))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon tax prices in Sweden from 1991 to 2019")
+```
+Sharp rise in the years 2000 in the carbon tax
+
+```{r}
+#Plotting emissions depending on changes in carbon tax price
+library(RColorBrewer)
+ggplot(Sweden,aes(x=Price1+Price2,y=PerCapita))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Per capita CO2 emissions")+xlab("Price")+ggtitle("Yearly per capita CO2 emissions and carbon pricing in Sweden")
+```
+Graphically, there seems to be a negative relationship between the carbon tax level and the CO2 emissions
+
+```{r}
+library(foreign)
+Reg=lm(PerCapita~Price1, data=Sweden)
+summary(Reg)
+```
+
+Increasing the carbon tax by $1 reduces emissions by 0.01 tons per capita in Sweden (99% CI)
+
+
+```{r}
+#Plotting emissions depending on Allowance
+library(RColorBrewer)
+ggplot(Sweden,aes(x=AllowancePrice,y=PerCapita))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+xlab("Allowance")+ggtitle("ETS prices on emissions")
+```
+
+
+```{r}
+library(foreign)
+library(stargazer)
+Reg=lm(PerCapita~AllowancePrice, data=Sweden)
+summary(Reg)
+```
+
+
+
+```{r}
+ #Finland analysis 
+
+#In Finland, until 2011 there was only 1 type of carbon tax and since it has bee split into transport fuels and other fossil fuels. As the transport fuels constitutes the main source of carbon taxation this data is used for the regression. 
+
+#Data loading
+library(readxl)
+Finland <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Finland.xlsx")
+```
+
+```{r}
+#Plotting Evolution of carbon emissions over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Finland,aes(x=Year,y=Price1))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon tax prices in Finland from 1990 to 2019")
+```
+
+```{r}
+#Plotting emissions depending on changes in carbon tax price
+library(RColorBrewer)
+ggplot(Finland,aes(x=Price1,y=PerCapita))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+xlab ("Price")+ylab("Per capita emissions")+ggtitle("Yearly per capita CO2 emissions and carbon pricing in Finland")
+```
+
+```{r}
+library(foreign)
+Reg=lm(PerCapita~Price1, data=Finland)
+summary(Reg)
+```
+
+```{r}
+library(foreign)
+library(stargazer)
+Reg=lm(Emissions~Price1+AllowancePrice, data=Finland)
+summary(Reg)
+```
+
+
+```{r}
+  #Norway analysis 
+
+#Data loading
+library(readxl)
+Norway <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Norway.xlsx")
+```
+Norway levies 2 carbon tax levels: one for the most polluting industries: petroleum producing industries and natural gas extraction and a second rate for other industries such as air transport, cement production...
+
+
+```{r}
+#Plotting Evolution of carbon emissions over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Norway,aes(x=Year,y=Price1+Price2))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Per capita CO2 emissions")+ggtitle("Yearly carbon tax prices in Norway from 1991 to 2019")
+```
+
+```{r}
+library(RColorBrewer)
+ggplot(Norway,aes(x=Price1+Price2,y=PerCapita))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+xlab ("Price")+ylab("Per capita CO2 emissions")+ggtitle("Yearly per capita CO2 emissions and carbon pricing in Norway")
+```
+
+```{r}
+library(foreign)
+Reg=lm(PerCapita~Price1, data=Norway)
+summary(Reg)
+```
+
+```{r}
+library(foreign)
+library(stargazer)
+Reg=lm(Emissions~Price2, data=Norway)
+summary(Reg)
+```
+
+```{r}
+library(foreign)
+library(stargazer)
+Reg=lm(Emissions~Price1+AllowancePrice, data=Norway)
+summary(Reg)
+```
+
+
+```{r}
+#Poland analysis 
+
+#Data loading
+library(readxl)
+Poland <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Poland.xlsx")
+```
+Poland levies a very low carbon tax, of only a couple of sense per ton of CO2 emitted. This is by far the lowest in Europe. 
+
+```{r}
+#Plotting Evolution of carbon emissions over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Poland,aes(x=Year,y=Price))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon tax prices in Poland from 1990 to 2019")
+```
+
+```{r}
+#Plotting emissions depending on changes in carbon tax price
+library(RColorBrewer)
+ggplot(Poland,aes(x=Price,y=Emissions))+geom_point(colour="Darkblue")+geom_smooth(method = lm, se=FALSE,colour="Darkred")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly carbon price in Poland")
+```
+Graphically, it does not seem like there is any linear relationship between the carbon tax and the price per ton of C02
+
+```{r}
+library(foreign)
+library(stargazer)
+Reg=lm(Emissions~Price, data=Poland)
+summary(Reg)
+```
+The regression is not significant. This may be attributed to the very low price of the carbon tax in Poland. 
+
+```{r}
+#Plotting Emissions in Poland over 30 years
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Poland,aes(x=Year,y=Emissions))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly C02 emissions in Poland from 1990 to 2019")
+```
+Overall, emissions have decreased since the 1990 level but since the years 2000 have fluctauted without an obvious overall reduction. 
+
+Poland is amongst the countries emitting the most in the EU and not surprinsigly has one of the lowest carbon taxes in Europe. The consequence of this is the limited effect of their carbon tax (see previous regression analysis)
+
+```{r}
+#Combined analysis 
+
+#Data loading
+library(readxl)
+Combined <- read_xlsx("/Users/emmadarniche/Desktop/Imperial College/Semester 3/ESB report/Combined.xlsx")
+```
+
+```{r}
+library(ggplot2)
+library(RColorBrewer)
+ggplot(Combined,aes(x=Year,y=Emissions))+geom_point(colour="SkyBlue")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Carbon Price per ton CO2")+ggtitle("Yearly C02 emissions in 4 selected countries from 1990 to 2019")
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(Combined,aes(x=Year,y=PerCapita))+geom_point(colour="Orange")+theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+ylab("Per Capita emissions")+ggtitle("Per Capita emissions in 4 selected countries from 1990 to 2019")
+```
+
+```{r}
+ggplot(Combined, aes(x=Year,y=PerCapita,fill=Entity)) + 
+  geom_bar(stat = "identity")+
+  ggtitle("Per Capita emissions per country") +
+  xlab("Year") +
+  ylab("Per Capita emissions")+
+  theme_minimal()+theme_bw()+theme(panel.border = element_blank(), panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+```
+Plotting the per capita emissions of the four countries between 1991 and 2019, Sweden has the lowest level of per capita CO2 emissions. 
+
+```{r}
+library(foreign)
+library(plm)
+library(stargazer)
+Reg=plm(Emissions~Price+AllowancePrice, data=Combined,index=c("Year"),model = "within",effect = "twoway")
+summary(Reg)
+```
+When controlling for ETS allowance price, the regression is still statistically significant at the 10% confidence interval. 
+
+```{r}
+library(foreign)
+Reg=plm(PerCapita~Price+AllowancePrice, data=Combined,index=c("Year"),model = "within",effect = "twoway")
+summary(Reg)
+```
+
